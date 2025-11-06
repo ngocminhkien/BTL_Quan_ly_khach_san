@@ -54,7 +54,7 @@ Hệ thống Quản lý Đoàn viên trong trường Đại học được xây 
 <img width="1885" height="467" alt="image" src="docs/img_git/index.png" />
 <img width="1885" height="467" alt="image" src="docs/img_git/index2.png" />
 ### Trang dashboard admin
-<img width="1886" height="940" alt="image" src="" />
+<img width="1886" height="940" alt="image" src="docs/img_git/dashboard.png" />
 ### Trang quản lý phòng     
 <img width="1890" height="932" alt="image" src="" />
 ### Trang quản lý loại phòng 
