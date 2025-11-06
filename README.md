@@ -50,32 +50,19 @@ Hệ thống Quản lý Đoàn viên trong trường Đại học được xây 
 ## 🚀 3. Hình ảnh các chức năng
 ### Trang đăng nhập
 <img width="1902" height="931" alt="image" src="" />
-### Trang dashboard admin
+### Trang index
 <img width="1885" height="935" alt="image" src="" />
-### Trang dashboard cán bộ 
+### Trang dashboard admin
 <img width="1886" height="940" alt="image" src="" />
-### Trang dashboard đoàn viên     
+### Trang quản lý phòng     
 <img width="1890" height="932" alt="image" src="" />
-### Trang quản lý liên chi đoàn 
+### Trang quản lý loại phòng 
 <img width="1901" height="939" alt="image" src="" />
-### Trang quản lý chi đoàn
+### Trang quản lý quản lý đặt phòng
 <img width="1892" height="938" alt="image" src="" />
-### Trang quản lý đoàn viên
+### Trang quản lý quản lý khách 
 <img width="1882" height="937" alt="image" src="" />
-### Trang quản lý lịch sử tham gia
-<img width="1882" height="937" alt="image" src="" />
-### Trang quản lý đoàn phí
-<img width="1887" height="934" alt="image" src="" />
-### Trang quản lý điểm rèn luyện 
-<img width="1888" height="944" alt="image" src="" />
-### Trang quản lý sự kiện 
-<img width="1904" height="935" alt="image" src="" />
-### Trang quản lý khen thưởng
-<img width="1890" height="942" alt="image" src="" />
-### Trang quản lý thông báo
-<img width="1904" height="938" alt="image" src="" />
-### Trang quản lý tài khoản
-<img width="1902" height="930" alt="image" src="" />
+
 ## ⚙️ 4. Cài đặt
 
 ### 4.1. Cài đặt công cụ, môi trường và các thư viện cần thiết
