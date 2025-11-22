@@ -1,0 +1,198 @@
+/* =======================================
+   File: assets/css/auth_style.css
+   GIAO DIỆN ĐĂNG NHẬP/ĐĂNG KÝ (KIỂU KHÁCH SẠN)
+   ======================================= */
+
+/* Thiết lập cơ bản cho trang */
+body.login-body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Nền Gradient */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Container chính chia đôi màn hình */
+.login-split-container {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    min-height: 600px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden; 
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* 1. KHUNG HÌNH ẢNH (Bên trái) */
+.login-split-image {
+    flex-basis: 50%;
+    background-image: url('../images/slider-image.jpg'); /* Đường dẫn tương đối từ CSS */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; 
+}
+
+/* Lớp phủ */
+.login-split-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
+}
+
+/* Text trên ảnh */
+.login-image-content {
+    position: relative; z-index: 2;
+}
+.login-image-content h1 {
+    font-family: 'Cormorant Upright', serif; 
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.login-image-content p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* 2. KHUNG FORM (Bên phải) */
+.login-split-form {
+    flex-basis: 50%;
+    padding: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form-box {
+    width: 100%;
+    max-width: 400px;
+    /* KHÔNG CÓ text-align: center; ở đây */
+}
+
+.login-form-box h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center; /* Căn giữa Tiêu đề */
+}
+
+.login-form-box p.form-subtitle {
+    color: #7f8c8d;
+    font-size: 16px;
+    margin-bottom: 30px;
+    text-align: center; /* Căn giữa Tiêu đề phụ */
+}
+
+/* Tùy chỉnh Form */
+.login-form-box .form-group {
+    text-align: left; /* Căn trái các ô ghi */
+    margin-bottom: 20px;
+}
+.login-form-box .form-group label {
+    font-weight: 600;
+    color: #34495e;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.login-form-box .form-group .form-control {
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    width: 100%; /* Đảm bảo input chiếm đủ độ rộng */
+    box-sizing: border-box; /* Quan trọng */
+}
+.login-form-box .form-group .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+/* Nút Submit */
+.login-form-box .btn-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: none; /* Đảm bảo nút tuân thủ màu nền */
+    cursor: pointer;
+}
+.login-form-box .btn-login {
+    background-color: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+.login-form-box .btn-register {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+/* Link chuyển đổi */
+.form-switch-link {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #777;
+    text-align: center;
+}
+.form-switch-link a {
+    color: #667eea;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Thông báo lỗi / thành công */
+.form-alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-align: center; /* Căn giữa chữ trong thông báo */
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.form-alert.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+.form-alert.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .login-split-container {
+        flex-direction: column;
+        min-height: auto;
+        max-width: 500px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .login-split-image {
+        display: none; 
+    }
+    .login-split-form {
+        flex-basis: 100%;
+        padding: 30px;
+    }
+}

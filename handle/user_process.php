@@ -30,7 +30,7 @@ switch ($action) {
         
         // Kiểm tra logic: Không cho Admin tự hạ quyền
         $is_self = ($user_id == $_SESSION['user_id']);
-        if ($is_self && $role != 1) {
+        if ($is_self && $role != 1) { // 1 = Admin
             header("Location: $redirect_url?error=self_demote");
             exit;
         }

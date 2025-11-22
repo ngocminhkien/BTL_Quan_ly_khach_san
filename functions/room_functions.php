@@ -2,9 +2,9 @@
 // File này chứa TẤT CẢ các hàm CSDL cho chức năng 'Phòng'
 
 /**
- * Lấy tất cả các phòng (JOIN với loại phòng).
+ * Lấy tất cả các phòng (LEFT JOIN với loại phòng).
  * @param object $conn Biến kết nối CSDL
- * @return object Kết quả MySQLi
+ * @return object|false Kết quả MySQLi hoặc False nếu lỗi
  */
 function getAllRooms($conn) {
     $sql = "SELECT 
@@ -14,9 +14,16 @@ function getAllRooms($conn) {
                 room_types.type_name,
                 room_types.price_per_night
             FROM rooms
-            JOIN room_types ON rooms.room_type_id = room_types.id
+            LEFT JOIN room_types ON rooms.room_type_id = room_types.id
             ORDER BY rooms.room_number ASC";
+            
     $result = $conn->query($sql);
+    
+    // THÊM KIỂM TRA LỖI
+    if ($result === false) {
+        die("Lỗi SQL trong hàm getAllRooms(): " . $conn->error);
+    }
+    
     return $result;
 }
 
@@ -45,7 +52,6 @@ function getRoomById($conn, $room_id) {
  */
 function createRoom($conn, $data) {
     $stmt = $conn->prepare("INSERT INTO rooms (room_number, room_type_id, status) VALUES (?, ?, ?)");
-    // 's' = string (room_number), 'i' = integer (room_type_id), 's' = string (status)
     $stmt->bind_param("sis", $data['room_number'], $data['room_type_id'], $data['status']);
     return $stmt->execute();
 }
@@ -59,7 +65,6 @@ function createRoom($conn, $data) {
  */
 function updateRoom($conn, $room_id, $data) {
     $stmt = $conn->prepare("UPDATE rooms SET room_number = ?, room_type_id = ?, status = ? WHERE id = ?");
-    // 's' (number), 'i' (type_id), 's' (status), 'i' (room_id)
     $stmt->bind_param("sisi", $data['room_number'], $data['room_type_id'], $data['status'], $room_id);
     return $stmt->execute();
 }
@@ -71,7 +76,6 @@ function updateRoom($conn, $room_id, $data) {
  * @return bool True nếu thành công
  */
 function deleteRoom($conn, $room_id) {
-    // (Nên thêm kiểm tra: Không cho xóa nếu phòng đang có booking 'confirmed' hoặc 'checked_in')
     $stmt = $conn->prepare("DELETE FROM rooms WHERE id = ?");
     $stmt->bind_param("i", $room_id);
     return $stmt->execute();

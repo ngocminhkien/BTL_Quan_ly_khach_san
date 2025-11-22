@@ -4,11 +4,14 @@
 /**
  * Lấy tất cả người dùng (admin và nhân viên).
  * @param object $conn Biến kết nối CSDL
- * @return object Kết quả MySQLi
+ * @return object|false Kết quả MySQLi hoặc false nếu lỗi
  */
 function getAllUsers($conn) {
     $sql = "SELECT id, username, full_name, role FROM users ORDER BY full_name ASC";
     $result = $conn->query($sql);
+    if ($result === false) {
+        die("Lỗi SQL (getAllUsers): " . $conn->error);
+    }
     return $result;
 }
 

@@ -1,9 +1,7 @@
 <?php
-// Luôn bắt đầu session ở file xử lý
 session_start();
-require_once '../functions/db_connection.php'; // Gọi kết nối CSDL
+require_once '../functions/db_connection.php';
 
-// Xác định hành động (login hoặc register)
 $action = $_POST['action'] ?? 'login';
 
 switch ($action) {
@@ -12,15 +10,14 @@ switch ($action) {
     // TRƯỜNG HỢP: ĐĂNG NHẬP
     // -------------------------
     case 'login':
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? ''); 
 
         if (empty($username) || empty($password)) {
-            header("Location: ../views/login.php?error=empty");
+            header("Location: /BTL/views/login.php?error=empty");
             exit;
         }
 
-        // Lấy thông tin user VÀ QUYỀN (role)
         $stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -29,69 +26,80 @@ switch ($action) {
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
 
-            // Xác thực mật khẩu
+            // Bây giờ $password (đã trim) sẽ khớp với $user['password']
             if (password_verify($password, $user['password'])) {
-                // Đăng nhập thành công, lưu session
+                // Đăng nhập thành công
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_username'] = $user['username'];
-                $_SESSION['user_role'] = $user['role']; // Rất quan trọng
+                $_SESSION['user_role'] = $user['role']; 
 
-                // *** PHÂN LUỒNG QUAN TRỌNG ***
                 if ($user['role'] == 1) {
-                    // Nếu là Admin (role=1), chuyển đến trang Dashboard
-                    header("Location: ../views/dashboard.php");
+                    header("Location: /BTL/views/dashboard.php"); // Admin
                 } else {
-                    // Nếu là người dùng (role=2), chuyển về trang chủ
-                    header("Location: ../index.html"); // Hoặc trang cá nhân của người dùng
+                    header("Location: /BTL/"); // Người dùng
                 }
                 exit;
 
             } else {
-                // Sai mật khẩu
-                header("Location: ../views/login.php?error=1");
+                header("Location: /BTL/views/login.php?error=1"); // Sai mật khẩu
                 exit;
             }
         } else {
-            // Không tìm thấy user
-            header("Location: ../views/login.php?error=1");
+            header("Location: /BTL/views/login.php?error=1"); // Không tìm thấy user
             exit;
         }
         $stmt->close();
         break;
 
     // -------------------------
-    // TRƯỜNG HỢP: ĐĂNG KÝ
+    // TRƯỜNG HỢP: ĐĂNG KÝ (ĐÃ CẬP NHẬT)
     // -------------------------
     case 'register':
-        $full_name = $_POST['full_name'] ?? '';
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
-
-        // (Bạn nên thêm kiểm tra xem username/email đã tồn tại chưa)
+        $full_name = trim($_POST['full_name'] ?? '');
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
         
         if (empty($full_name) || empty($username) || empty($password)) {
-             header("Location: ../views/register.php?error=empty");
+             header("Location: /BTL/views/register.php?error=empty");
              exit;
         }
-
-        // Mã hóa mật khẩu
+        
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        // *** MẶC ĐỊNH ROLE = 2 (Người dùng) ***
-        $default_role = 2; 
+        $default_role = 2; // Mặc định là Người dùng
 
-        $stmt = $conn->prepare("INSERT INTO users (full_name, username, password, role) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sssi", $full_name, $username, $hashed_password, $default_role);
+        // Bắt đầu Transaction
+        $conn->begin_transaction();
         
-        if ($stmt->execute()) {
-            // Đăng ký thành công, chuyển về trang login
-            header("Location: ../views/login.php?register=success");
-        } else {
-            // Lỗi (ví dụ: trùng username)
-            header("Location: ../views/register.php?error=exists");
+        try {
+            // 1. Tạo tài khoản trong bảng 'users'
+            // *** SỬA LỖI THỨ TỰ CỘT Ở ĐÂY ***
+            $stmt_user = $conn->prepare("INSERT INTO users (username, password, full_name, role) VALUES (?, ?, ?, ?)");
+            $stmt_user->bind_param("sssi", $username, $hashed_password, $full_name, $default_role);
+            $stmt_user->execute();
+            
+            // Lấy ID của user vừa tạo
+            $new_user_id = $conn->insert_id;
+            
+            // 2. TẠO HỒ SƠ KHÁCH HÀNG TƯƠNG ỨNG
+            $stmt_customer = $conn->prepare("INSERT INTO customers (id, full_name, email, phone) VALUES (?, ?, ?, ?)");
+            $email_default = $username . '@example.com'; 
+            $phone_default = '0000000000'; 
+            $stmt_customer->bind_param("isss", $new_user_id, $full_name, $email_default, $phone_default);
+            $stmt_customer->execute();
+
+            // Nếu cả 2 đều thành công
+            $conn->commit();
+            header("Location: /BTL/views/login.php?register=success");
+            
+        } catch (mysqli_sql_exception $exception) {
+            // Nếu có lỗi (ví dụ: trùng username), hủy bỏ
+            $conn->rollback();
+            header("Location: /BTL/views/register.php?error=exists");
         }
-        $stmt->close();
+        
+        $stmt_user->close();
+        $stmt_customer->close();
         break;
 }
 

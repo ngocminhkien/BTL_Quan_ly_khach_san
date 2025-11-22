@@ -886,3 +886,32 @@ iconify-icon.quote {
   background-color: transparent;
   box-shadow: none;
 }
+
+/* Moved from views/booking/invoice.php */
+.invoice-box {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px;
+  border: 1px solid #eee;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  background: #fff;
+}
+.invoice-table { width: 100%; line-height: inherit; text-align: left; }
+.invoice-table td { padding: 5px; vertical-align: top; }
+.invoice-table .right { text-align: right; }
+.invoice-table .total { font-size: 1.5em; font-weight: bold; }
+.invoice-actions { text-align: center; margin-top: 30px; }
+
+@media print {
+  body { background: #fff !important; }
+  .main-header, .main-footer, .invoice-actions, .page-title {
+    display: none !important;
+  }
+  .main-content {
+    padding: 0 !important;
+  }
+  .invoice-box {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}

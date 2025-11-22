@@ -4,7 +4,7 @@
 /**
  * Lấy tất cả các đơn đặt phòng (JOIN với các bảng khác).
  * @param object $conn Biến kết nối CSDL
- * @return object Kết quả MySQLi
+ * @return object|false Kết quả MySQLi hoặc false nếu lỗi
  */
 function getAllBookings($conn) {
     $sql = "SELECT 
@@ -21,7 +21,11 @@ function getAllBookings($conn) {
             LEFT JOIN rooms AS r ON b.room_id = r.id
             LEFT JOIN room_types AS rt ON r.room_type_id = rt.id
             ORDER BY b.check_in_date DESC";
+            
     $result = $conn->query($sql);
+    if ($result === false) {
+        die("Lỗi SQL trong hàm getAllBookings(): " . $conn->error);
+    }
     return $result;
 }
 
@@ -75,6 +79,7 @@ function checkRoomAvailability($conn, $room_type_id, $check_in_date, $check_out_
     }
 
     $stmt_booked = $conn->prepare($sql_booked);
+    if ($stmt_booked === false) die("Lỗi SQL (checkRoomAvailability): " . $conn->error);
     $stmt_booked->bind_param($types, ...$params);
     $stmt_booked->execute();
     $booked_rooms_count = $stmt_booked->get_result()->fetch_assoc()['booked_count'];
@@ -107,6 +112,7 @@ function findAvailableRoom($conn, $room_type_id, $check_in_date, $check_out_date
     }
     
     $stmt_booked_ids = $conn->prepare($sql_booked_ids);
+    if ($stmt_booked_ids === false) die("Lỗi SQL (findAvailableRoom/booked_ids): " . $conn->error);
     $stmt_booked_ids->bind_param($types, ...$params);
     $stmt_booked_ids->execute();
     $result_booked_ids = $stmt_booked_ids->get_result();
@@ -129,6 +135,7 @@ function findAvailableRoom($conn, $room_type_id, $check_in_date, $check_out_date
     $sql_find .= " LIMIT 1";
 
     $stmt_find = $conn->prepare($sql_find);
+    if ($stmt_find === false) die("Lỗi SQL (findAvailableRoom/find): " . $conn->error);
     $stmt_find->bind_param($types_find, ...$params_find);
     $stmt_find->execute();
     $result_available_room = $stmt_find->get_result();
@@ -147,7 +154,9 @@ function calculateTotalPrice($conn, $room_type_id, $check_in_date, $check_out_da
     $stmt_price = $conn->prepare("SELECT price_per_night FROM room_types WHERE id = ?");
     $stmt_price->bind_param("i", $room_type_id);
     $stmt_price->execute();
-    $price_per_night = $stmt_price->get_result()->fetch_assoc()['price_per_night'];
+    $result = $stmt_price->get_result();
+    if ($result->num_rows == 0) return 0; // Tránh lỗi nếu không tìm thấy loại phòng
+    $price_per_night = $result->fetch_assoc()['price_per_night'];
     $stmt_price->close();
 
     $date_in = new DateTime($check_in_date);
@@ -219,7 +228,11 @@ function updateBookingStatus($conn, $booking_id, $booking_status, $room_status =
     $stmt_room = $conn->prepare("SELECT room_id FROM bookings WHERE id = ?");
     $stmt_room->bind_param("i", $booking_id);
     $stmt_room->execute();
-    $room_id = $stmt_room->get_result()->fetch_assoc()['room_id'];
+    $result = $stmt_room->get_result();
+    if ($result->num_rows == 0) {
+        die("Lỗi: Không tìm thấy đơn đặt phòng để cập nhật trạng thái.");
+    }
+    $room_id = $result->fetch_assoc()['room_id'];
     $stmt_room->close();
     
     // Bắt đầu Transaction
@@ -248,5 +261,29 @@ function updateBookingStatus($conn, $booking_id, $booking_status, $room_status =
         die("Lỗi cập nhật trạng thái: " . $e->getMessage());
     }
 }
-
+/**
+ * Lấy danh sách đặt phòng của một khách hàng cụ thể.
+ * @param object $conn Biến kết nối
+ * @param int $customer_id ID khách hàng
+ */
+function getBookingsByCustomerId($conn, $customer_id) {
+    $sql = "SELECT 
+                b.id, 
+                b.check_in_date, 
+                b.check_out_date, 
+                b.total_price, 
+                b.status,
+                r.room_number,
+                rt.type_name AS room_type
+            FROM bookings AS b
+            LEFT JOIN rooms AS r ON b.room_id = r.id
+            LEFT JOIN room_types AS rt ON r.room_type_id = rt.id
+            WHERE b.customer_id = ?
+            ORDER BY b.created_at DESC"; // Sắp xếp mới nhất lên đầu
+            
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $customer_id);
+    $stmt->execute();
+    return $stmt->get_result();
+}
 ?>

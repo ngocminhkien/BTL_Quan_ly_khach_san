@@ -3,8 +3,6 @@
 $servername = "localhost";
 $username = "root";
 $dbname = "db_quanlykhachsan";
-
-// !!! THAY MẬT KHẨU CỦA BẠN VÀO ĐÂY !!!
 $password = ""; 
 
 // 1. Tạo kết nối
