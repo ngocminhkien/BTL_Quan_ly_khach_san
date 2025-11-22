@@ -17,11 +17,15 @@ if ($room === null) {
     die("Không tìm thấy phòng.");
 }
 
-// 3. Lấy TẤT CẢ loại phòng BẰNG HÀM
+// 3. Lấy TẤT CẢ loại phòng BẰNG HÀM (cho dropdown)
 $result_types = getAllRoomTypes($conn);
 
 require_once '../partials/header.php';
 ?>
+
+<div class="page-title">
+    <h2>Sửa thông tin Phòng: <?php echo htmlspecialchars($room['room_number']); ?></h2>
+</div>
 
 <form class="form-layout" action="../../handle/room_process.php" method="POST">
     
@@ -29,13 +33,19 @@ require_once '../partials/header.php';
     <input type="hidden" name="room_id" value="<?php echo $room_id; ?>">
 
     <div class="form-group">
+        <label for="room_number">Số phòng (Tên phòng):</label>
+        <input type="text" id="room_number" name="room_number" 
+               value="<?php echo htmlspecialchars($room['room_number']); ?>" required>
+    </div>
+    
+    <div class="form-group">
         <label for="room_type_id">Loại phòng:</label>
         <select id="room_type_id" name="room_type_id" required>
             <option value="">-- Chọn loại phòng --</option>
             <?php
-            // Code lặp while cho dropdown (để 'selected') giữ nguyên
-            if ($result_types->num_rows > 0) {
+            if ($result_types && $result_types->num_rows > 0) {
                 while ($type = $result_types->fetch_assoc()) {
+                    // Kiểm tra để 'selected' đúng loại phòng cũ
                     $selected = ($type['id'] == $room['room_type_id']) ? 'selected' : '';
                     echo "<option value='" . $type['id'] . "' " . $selected . ">" . htmlspecialchars($type['type_name']) . "</option>";
                 }
@@ -44,7 +54,21 @@ require_once '../partials/header.php';
         </select>
     </div>
 
-    </form>
+    <div class="form-group">
+        <label for="status">Trạng thái:</label>
+        <select id="status" name="status" required>
+            <option value="available" <?php if ($room['status'] == 'available') echo 'selected'; ?>>Có sẵn</option>
+            <option value="cleaning" <?php if ($room['status'] == 'cleaning') echo 'selected'; ?>>Đang dọn</option>
+            <option value="occupied" <?php if ($room['status'] == 'occupied') echo 'selected'; ?>>Đang có khách</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn-submit">Cập nhật</button>
+        <a href="list.php" class="btn-cancel">Hủy</a>
+    </div>
+
+</form>
 
 <?php
 $conn->close();
