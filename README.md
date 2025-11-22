@@ -49,20 +49,30 @@ Hệ thống Quản lý Đoàn viên trong trường Đại học được xây 
 
 ## 🚀 3. Hình ảnh các chức năng
 ### Trang đăng nhập
-<img width="1902" height="931" alt="image" src="" />
+<img width="1902" height="931" alt="image" src="docs/img_git/login.png" />
+### Trang đăng ký
+<img width="1902" height="931" alt="image" src="docs/img_git/register.png" />
 ### Trang index
 <img width="1885" height="467" alt="image" src="docs/img_git/index.png" />
 <img width="1885" height="467" alt="image" src="docs/img_git/index2.png" />
 ### Trang dashboard admin
 <img width="1886" height="940" alt="image" src="docs/img_git/dashboard.png" />
-### Trang quản lý phòng     
-<img width="1890" height="932" alt="image" src="" />
-### Trang quản lý loại phòng 
-<img width="1901" height="939" alt="image" src="" />
-### Trang quản lý quản lý đặt phòng
-<img width="1892" height="938" alt="image" src="" />
+### Trang quản lý đặt phòng     
+<img width="1890" height="932" alt="image" src="docs/img_git/booking_list.png" />
+### Trang tạo đơn đặt phòng   
+<img width="1890" height="932" alt="image" src="docs/img_git/booking_add.png" />
+### Trang quản lý phòng 
+<img width="1901" height="939" alt="image" src="docs/img_git/room_list.png" />
+### Trang thêm phòng mới 
+<img width="1890" height="932" alt="image" src="docs/img_git/room_add.png" />
+### Trang quản lý loại phòng
+<img width="1892" height="938" alt="image" src="docs/img_git/room_type_list.png" />
+### Trang thêm loại phòng     
+<img width="1890" height="932" alt="image" src="docs/img_git/room_type_add.png" />
 ### Trang quản lý quản lý khách 
-<img width="1882" height="937" alt="image" src="" />
+<img width="1882" height="937" alt="image" src="docs/img_git/customer_list.png" />
+### Trang thêm khách hàng    
+<img width="1890" height="932" alt="image" src="docs/img_git/customer_add.png" />
 
 ## ⚙️ 4. Cài đặt
 
